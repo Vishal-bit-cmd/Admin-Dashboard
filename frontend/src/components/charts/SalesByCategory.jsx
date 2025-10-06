@@ -10,7 +10,18 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#A28CFF"];
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#A28CFF",
+  "#FF6699",
+  "#33CC33",
+  "#FF9933",
+  "#6699FF",
+  "#CC66FF",
+];
 
 export default function SalesByCategory() {
   const [data, setData] = useState([]);
@@ -21,11 +32,13 @@ export default function SalesByCategory() {
         const res = await axios.get(
           "http://localhost:5000/api/charts/sales-by-category"
         );
-        // Ensure numeric conversion
+
+        // Map backend fields to chart-compatible fields
         const formatted = res.data.map((item) => ({
-          category: item.category,
-          total_sales: Number(item.total_sales),
+          name: item.category_name, // This will appear in default legend
+          value: Number(item.total_sales), // Pie slice size
         }));
+
         setData(formatted);
       } catch (err) {
         console.error("Error fetching sales by category:", err);
@@ -45,19 +58,20 @@ export default function SalesByCategory() {
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie
-            dataKey="total_sales"
             data={data}
+            dataKey="value"
+            nameKey="name" // Important: default Legend will use this
             cx="50%"
             cy="50%"
             outerRadius={120}
-            label={(entry) => entry.category}
+            label={(entry) => entry.name} // Category names on pie slices
           >
             {data.map((_, index) => (
               <Cell key={index} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
           <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
-          <Legend />
+          <Legend /> {/* Default legend now uses nameKey */}
         </PieChart>
       </ResponsiveContainer>
     </div>

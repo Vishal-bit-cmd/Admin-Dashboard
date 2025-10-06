@@ -4,15 +4,20 @@ import axios from "axios";
 
 export default function ProductsTable() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState(null);
+
+  // Add/Edit product form state
   const [newProduct, setNewProduct] = useState({
     name: "",
     price: "",
-    category: "",
+    category_id: "",
   });
+  const [editingProduct, setEditingProduct] = useState(null);
 
+  // Fetch products
   const fetchProducts = async () => {
     try {
       const res = await axios.get("http://localhost:5000/api/products", {
@@ -24,35 +29,83 @@ export default function ProductsTable() {
     }
   };
 
+  // Fetch categories for dropdown
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:5000/api/products/categories"
+      );
+      setCategories(res.data);
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
   }, [search, category]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    fetchCustomers(searchTerm);
-  };
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
-  // handle file upload
+  // Add or Update product
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!newProduct.name || !newProduct.price) return;
+    if (!newProduct.name || !newProduct.price || !newProduct.category_id)
+      return;
 
     const formData = new FormData();
     formData.append("name", newProduct.name);
     formData.append("price", newProduct.price);
-    formData.append("category", newProduct.category);
+    formData.append("category_id", newProduct.category_id);
     if (image) formData.append("image", image);
 
     try {
-      await axios.post("http://localhost:5000/api/products", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      setNewProduct({ name: "", price: "", category: "" });
+      if (editingProduct) {
+        // Update existing
+        await axios.put(
+          `http://localhost:5000/api/products/${editingProduct.id}`,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+      } else {
+        // Create new
+        await axios.post("http://localhost:5000/api/products", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
+
+      setNewProduct({ name: "", price: "", category_id: "" });
       setImage(null);
+      setEditingProduct(null);
       fetchProducts();
     } catch (err) {
-      console.error("Error uploading product:", err);
+      console.error("Error saving product:", err);
+    }
+  };
+
+  // Start editing a product
+  const handleEdit = (product) => {
+    setEditingProduct(product);
+    setNewProduct({
+      name: product.name,
+      price: product.price,
+      category_id:
+        categories.find((c) => c.name === product.category)?.id || "",
+    });
+    setImage(null);
+  };
+
+  // Delete product
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
+    try {
+      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      fetchProducts();
+    } catch (err) {
+      console.error("Error deleting product:", err);
     }
   };
 
@@ -60,6 +113,7 @@ export default function ProductsTable() {
     <div className="p-3">
       <h3>Products</h3>
 
+      {/* Search + Filter */}
       <div className="d-flex mb-3 gap-3">
         <input
           type="text"
@@ -75,20 +129,15 @@ export default function ProductsTable() {
           onChange={(e) => setCategory(e.target.value)}
         >
           <option value="">All Categories</option>
-          <option value="Computers">Computers</option>
-          <option value="Phones">Phones</option>
-          <option value="Accessories">Accessories</option>
-          <option value="Home Appliances">Home Appliances</option>
-          <option value="Books">Books</option>
-          <option value="Clothing">Clothing</option>
-          <option value="Sports">Sports</option>
-          <option value="Fashion">Fashion</option>
-          <option value="Groceries">Groceries</option>
-          <option value="Toys">Toys</option>
+          {categories.map((cat) => (
+            <option key={cat.id} value={cat.id}>
+              {cat.name}
+            </option>
+          ))}
         </select>
       </div>
 
-      {/* Add Product Form */}
+      {/* Add/Edit Product Form */}
       <form className="mb-4" onSubmit={handleSubmit}>
         <div className="d-flex gap-2">
           <input
@@ -109,14 +158,44 @@ export default function ProductsTable() {
               setNewProduct({ ...newProduct, price: e.target.value })
             }
           />
+
+          <select
+            className="form-select"
+            value={newProduct.category_id}
+            onChange={(e) =>
+              setNewProduct({ ...newProduct, category_id: e.target.value })
+            }
+          >
+            <option value="">Select Category</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+
           <input
             type="file"
             className="form-control"
             onChange={(e) => setImage(e.target.files[0])}
           />
+
           <button className="btn btn-primary" type="submit">
-            Add
+            {editingProduct ? "Update" : "Add"}
           </button>
+          {editingProduct && (
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => {
+                setEditingProduct(null);
+                setNewProduct({ name: "", price: "", category_id: "" });
+                setImage(null);
+              }}
+            >
+              Cancel
+            </button>
+          )}
         </div>
       </form>
 
@@ -127,7 +206,9 @@ export default function ProductsTable() {
             <th>ID</th>
             <th>Name</th>
             <th>Price</th>
+            <th>Category</th>
             <th>Image</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -137,22 +218,38 @@ export default function ProductsTable() {
                 <td>{p.id}</td>
                 <td>{p.name}</td>
                 <td>${p.price}</td>
+                <td>{p.category}</td>
                 <td>
                   {p.image_url ? (
                     <img
-                      src={`http://localhost:5000/uploads/${p.image_url}`}
+                      src={p.image_url}
                       alt={p.name}
                       width="50"
+                      style={{ objectFit: "cover" }}
                     />
                   ) : (
                     "No image"
                   )}
                 </td>
+                <td>
+                  <button
+                    className="btn btn-sm btn-warning me-2"
+                    onClick={() => handleEdit(p)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="btn btn-sm btn-danger"
+                    onClick={() => handleDelete(p.id)}
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="5" className="text-center">
+              <td colSpan="6" className="text-center">
                 No products found
               </td>
             </tr>

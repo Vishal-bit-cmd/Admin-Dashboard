@@ -1,16 +1,20 @@
-// src/components/CustomersTable.jsx
+// src/components/tables/CustomersTable.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function CustomersTable() {
   const [customers, setCustomers] = useState([]);
   const [search, setSearch] = useState("");
-  const [minOrders, setMinOrders] = useState("");
 
-  const fetchCustomers = async () => {
+  // Form states
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+
+  const fetchCustomers = async (searchValue = "") => {
     try {
       const res = await axios.get("http://localhost:5000/api/customers", {
-        params: { search, minOrders },
+        params: { search: searchValue },
       });
       setCustomers(res.data);
     } catch (err) {
@@ -20,38 +24,97 @@ export default function CustomersTable() {
 
   useEffect(() => {
     fetchCustomers();
-  }, [search, minOrders]);
+  }, []);
 
-  const handleSearch = (e) => {
+  // 🔹 Live search every time user types
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearch(value);
+    fetchCustomers(value);
+  };
+
+  const handleAddCustomer = async (e) => {
     e.preventDefault();
-    fetchCustomers(searchTerm);
+    if (!name || !email) {
+      alert("Name and Email are required!");
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:5000/api/customers", {
+        name,
+        email,
+        phone,
+      });
+
+      // Clear form
+      setName("");
+      setEmail("");
+      setPhone("");
+
+      // Refresh list
+      fetchCustomers(search);
+    } catch (err) {
+      console.error("Error adding customer:", err);
+      alert("Failed to add customer. Check console for details.");
+    }
   };
 
   return (
     <div className="p-3">
       <h3>Customers</h3>
 
-      <div className="d-flex mb-3 gap-3">
-        <input
-          type="text"
-          className="form-control w-50"
-          placeholder="Search by name or email"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+      {/* Search Bar (live search on every keystroke) */}
+      <input
+        type="text"
+        className="form-control mb-3"
+        placeholder="Search by name or email"
+        value={search}
+        onChange={handleSearchChange}
+      />
 
-        <select
-          className="form-select w-25"
-          value={minOrders}
-          onChange={(e) => setMinOrders(e.target.value)}
-        >
-          <option value="">All Orders</option>
-          <option value="1">1+ Orders</option>
-          <option value="5">5+ Orders</option>
-          <option value="10">10+ Orders</option>
-        </select>
+      {/* Add Customer Form */}
+      <div className="card p-3 mb-4">
+        <h5>Add New Customer</h5>
+        <form className="row g-2" onSubmit={handleAddCustomer}>
+          <div className="col-md-4">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="col-md-4">
+            <input
+              type="email"
+              className="form-control"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="col-md-3">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+          <div className="col-md-1">
+            <button type="submit" className="btn btn-success w-100">
+              Add
+            </button>
+          </div>
+        </form>
       </div>
 
+      {/* Customers Table */}
       <table className="table table-bordered table-hover">
         <thead className="table-light">
           <tr>
@@ -59,27 +122,19 @@ export default function CustomersTable() {
             <th>Name</th>
             <th>Email</th>
             <th>Phone</th>
-            <th>Orders</th>
+            <th>Created At</th>
           </tr>
         </thead>
         <tbody>
-          {customers.length > 0 ? (
-            customers.map((c) => (
-              <tr key={c.id}>
-                <td>{c.id}</td>
-                <td>{c.name}</td>
-                <td>{c.email}</td>
-                <td>{c.phone}</td>
-                <td>{c.orders_count || 0}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5" className="text-center">
-                No customers found
-              </td>
+          {customers.map((c) => (
+            <tr key={c.id}>
+              <td>{c.id}</td>
+              <td>{c.name}</td>
+              <td>{c.email}</td>
+              <td>{c.phone}</td>
+              <td>{new Date(c.created_at).toLocaleDateString()}</td>
             </tr>
-          )}
+          ))}
         </tbody>
       </table>
     </div>

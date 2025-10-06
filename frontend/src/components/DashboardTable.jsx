@@ -11,17 +11,10 @@ export default function DashboardTable() {
     const fetchData = async () => {
       try {
         const ordersRes = await axios.get("http://localhost:5000/api/orders");
-        setRecentOrders(ordersRes.data);
-
-        const productsRes = await axios.get(
-          "http://localhost:5000/api/charts/sales-by-product"
+        const sorted = ordersRes.data.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
-        setTopProducts(productsRes.data);
-
-        const customersRes = await axios.get(
-          "http://localhost:5000/api/charts/top-customers"
-        );
-        setTopCustomers(customersRes.data);
+        setRecentOrders(sorted.slice(0, 5));
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
       }
@@ -67,48 +60,6 @@ export default function DashboardTable() {
                   </span>
                 </td>
                 <td>{new Date(o.created_at).toLocaleDateString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Top Products */}
-      <div className="mt-4">
-        <h5>Top Products by Sales</h5>
-        <table className="table table-bordered table-hover">
-          <thead className="table-light">
-            <tr>
-              <th>Product Name</th>
-              <th>Total Sales ($)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {topProducts.map((p, idx) => (
-              <tr key={idx}>
-                <td>{p.product_name}</td>
-                <td>{Number(p.total_sales).toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Top Customers */}
-      <div className="mt-4">
-        <h5>Top Customers by Spending</h5>
-        <table className="table table-bordered table-hover">
-          <thead className="table-light">
-            <tr>
-              <th>Customer Name</th>
-              <th>Total Spent ($)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {topCustomers.map((c, idx) => (
-              <tr key={idx}>
-                <td>{c.customer_name}</td>
-                <td>{Number(c.total_spent).toFixed(2)}</td>
               </tr>
             ))}
           </tbody>

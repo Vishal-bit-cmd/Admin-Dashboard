@@ -14,7 +14,7 @@ pool.query("SELECT NOW()", (err, result) => {
 });
 
 // Import modular routes
-import KpiRoutes from "./routes/KpiRoutes.js";
+import KpiRoutes from "./routes/KPIRoutes.js";
 import ChartRoutes from "./routes/ChartRoutes.js";
 import OrderRoutes from "./routes/OrderRoutes.js";
 import ProductRoutes from "./routes/ProductRoutes.js";
@@ -24,6 +24,8 @@ import UserRoutes from "./routes/UserRoutes.js";
 dotenv.config();
 
 const app = express();
+
+app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 app.use(express.json());
 app.use(cors());
