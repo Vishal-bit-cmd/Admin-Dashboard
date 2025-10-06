@@ -39,6 +39,7 @@ router.get("/", async (req, res) => {
     } catch (err) {
         console.error("Error fetching orders:", err);
         res.status(500).json({ error: "Database error" });
+        // log the error for debugging purposes
     }
 });
 
