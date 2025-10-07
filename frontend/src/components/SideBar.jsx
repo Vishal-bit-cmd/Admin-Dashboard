@@ -1,37 +1,31 @@
 import { Link } from "react-router-dom";
 
-export default function Sidebar({ isOpen }) {
+export default function Sidebar({ isOpen, closeSidebar }) {
   return (
-    <div
-      className={`bg-light border-end vh-100 p-3 position-fixed top-0 ${
-        isOpen ? "start-0" : "-start-100"
-      } d-md-block`}
-      style={{ width: "220px", transition: "0.3s" }}
-    >
-      <h5>Menu</h5>
-      <ul className="nav flex-column">
+    <div className={`sidebar ${isOpen ? "open" : ""}`}>
+      <ul className="nav flex-column mt-3">
         <li className="nav-item">
-          <Link className="nav-link" to="/">
+          <Link to="/dashboard" className="nav-link" onClick={closeSidebar}>
             Dashboard
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/users">
+          <Link to="/users" className="nav-link" onClick={closeSidebar}>
             Users
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/customers">
+          <Link to="/customers" className="nav-link" onClick={closeSidebar}>
             Customers
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/products">
+          <Link to="/products" className="nav-link" onClick={closeSidebar}>
             Products
           </Link>
         </li>
         <li className="nav-item">
-          <Link className="nav-link" to="/orders">
+          <Link to="/orders" className="nav-link" onClick={closeSidebar}>
             Orders
           </Link>
         </li>

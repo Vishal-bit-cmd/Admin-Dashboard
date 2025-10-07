@@ -14,12 +14,9 @@ export const getOrderById = (id) => axios.get(`${BASE_URL}/orders/${id}`);
 // Customer endpoints
 export const getCustomers = (search = "") =>
     axios.get(`${BASE_URL}/customers`, { params: { search } });
-export const getCustomerById = (id) => axios.get(`${BASE_URL}/customers/${id}`);
 
 // Product endpoints
 export const getProducts = () => axios.get(`${BASE_URL}/products`);
-
-export const getProductById = (id) => axios.get(`${BASE_URL}/products/${id}`);
 
 // Chart endpoints
 export const getSalesByCategory = () =>

@@ -25,12 +25,11 @@ dotenv.config();
 
 const app = express();
 
-app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
-
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 // Use routes
 app.get("/", (req, res) => {

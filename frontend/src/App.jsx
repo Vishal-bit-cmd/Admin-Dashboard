@@ -1,32 +1,47 @@
-import Users from "./pages/Users";
-import Navbar from "./components/NavBar";
-import Sidebar from "./components/SideBar";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { useState } from "react";
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Orders from "./pages/Orders";
+import Users from "./pages/Users";
 import Customers from "./pages/Customers";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import React, { useState } from "react";
 
-export default function App() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
+function App() {
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const closeSidebar = () => setIsSidebarOpen(false);
 
   return (
     <Router>
       <Navbar toggleSidebar={toggleSidebar} />
-      <div className="d-flex">
-        <Sidebar isOpen={sidebarOpen} />
-        <div className="flex-grow-1 p-3" style={{ marginLeft: "220px" }}>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/users" element={<Users />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/customers" element={<Customers />} />
-          </Routes>
-        </div>
-      </div>
+      <Sidebar isOpen={isSidebarOpen} closeSidebar={closeSidebar} />
+
+      {/* Backdrop overlay (for mobile) */}
+      <div
+        className={`backdrop ${isSidebarOpen ? "show" : ""}`}
+        onClick={closeSidebar}
+      ></div>
+
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/customers" element={<Customers />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/orders" element={<Orders />} />
+        </Routes>
+      </main>
     </Router>
   );
 }
+
+export default App;

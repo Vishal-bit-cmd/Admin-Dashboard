@@ -1,19 +1,16 @@
-// src/components/Navbar.jsx
-import { useState } from "react";
-
 export default function Navbar({ toggleSidebar }) {
   return (
-    <nav className="navbar navbar-dark bg-dark px-3 d-flex justify-content-between">
-      <div className="d-flex align-items-center">
-        <button
-          className="btn btn-outline-light btn-sm me-2 d-md-none"
-          onClick={toggleSidebar}
-        >
-          ☰
+    <nav className="navbar navbar-light fixed-top bg-white border-bottom shadow-sm">
+      <div className="container-fluid d-flex justify-content-between align-items-center">
+        {/* Hamburger for mobile */}
+        <button className="btn d-lg-none" onClick={toggleSidebar}>
+          <i className="bi bi-list fs-3 text-primary"></i>
         </button>
-        <span className="navbar-brand mb-0 h1">Admin Dashboard</span>
+
+        <h5 className="m-0 fw-bold text-primary">Admin Dashboard</h5>
+
+        <div className="d-none d-lg-block text-muted fw-semibold">Admin</div>
       </div>
-      <button className="btn btn-outline-light btn-sm">Logout</button>
     </nav>
   );
 }
