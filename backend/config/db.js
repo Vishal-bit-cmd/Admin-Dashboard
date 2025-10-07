@@ -11,9 +11,7 @@ const pool = new Pool({
     database: process.env.DB_NAME,
     password: process.env.DB_PASSWORD,
     port: process.env.DB_PORT,
-    options: "-c search_path=seed",
-    connectionString: process.env.DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
+    options: "-c search_path=seed"
 });
 
 export default pool;
