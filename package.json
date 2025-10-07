@@ -1,10 +1,21 @@
 {
-  "name": "admin-dashboard",
-  "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "start:backend": "cd backend && node server.js",
-    "dev:backend": "cd backend && nodemon server.js",
-    "dev:frontend": "cd frontend && npm run dev"
+  "build": [
+    {
+      "name": "backend",
+      "root": "backend",
+      "buildCommand": "npm install",
+      "startCommand": "npm start"
+    },
+    {
+      "name": "frontend",
+      "root": "frontend",
+      "buildCommand": "npm install && npm run build",
+      "startCommand": "npx serve -s build"
+    }
+  ],
+  "plugins": {
+    "postgresql": {
+      "enabled": true
+    }
   }
 }
