@@ -4,8 +4,6 @@ import axios from "axios";
 
 export default function DashboardTable() {
   const [recentOrders, setRecentOrders] = useState([]);
-  const [topProducts, setTopProducts] = useState([]);
-  const [topCustomers, setTopCustomers] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {

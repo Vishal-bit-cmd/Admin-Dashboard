@@ -4,7 +4,7 @@ import pool from "../config/db.js";
 
 const router = express.Router();
 
-// Total sales from delivered orders
+// Total sales of delivered
 router.get("/total-sales", async (req, res) => {
     try {
         const result = await pool.query(`

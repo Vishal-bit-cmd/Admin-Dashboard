@@ -2,9 +2,9 @@
   "name": "admin-dashboard",
   "version": "1.0.0",
   "private": true,
+  "workspaces": ["frontend", "backend"],
   "scripts": {
-    "start:backend": "cd backend && node server.js",
-    "dev:backend": "cd backend && nodemon server.js",
-    "dev:frontend": "cd frontend && npm run dev"
+    "postinstall": "npm run build --workspace frontend",
+    "start": "npm start --workspace backend"
   }
 }
