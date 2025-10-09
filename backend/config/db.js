@@ -2,14 +2,15 @@ import pg from "pg";
 import dotenv from "dotenv";
 
 dotenv.config();
-
 const { Pool } = pg;
 
+const isRailway = !!process.env.DATABASE_URL;
+
 const pool = new Pool(
-    process.env.DATABASE_URL
+    isRailway
         ? {
             connectionString: process.env.DATABASE_URL,
-            ssl: { rejectUnauthorized: false },
+            ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : false,
         }
         : {
             user: process.env.DB_USER,
@@ -17,10 +18,12 @@ const pool = new Pool(
             database: process.env.DB_NAME,
             password: process.env.DB_PASSWORD,
             port: process.env.DB_PORT,
-            options: "-c search_path=seed",
+            options: "-c search_path=seed", // keep this for your local DB schema
+            ssl: false,
         }
 );
 
+// Test connection
 pool
     .connect()
     .then(() => console.log("✅ PostgreSQL connected successfully"))
