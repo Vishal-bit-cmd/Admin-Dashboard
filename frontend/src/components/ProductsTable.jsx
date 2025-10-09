@@ -1,6 +1,7 @@
 // src/components/ProductsTable.jsx
 import { useEffect, useState } from "react";
 import axios from "axios";
+import api from "../services/api";
 
 export default function ProductsTable() {
   const [products, setProducts] = useState([]);
@@ -32,9 +33,7 @@ export default function ProductsTable() {
   // Fetch categories for dropdown
   const fetchCategories = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:5000/api/products/categories"
-      );
+      const res = await api.get("/products/categories");
       setCategories(res.data);
     } catch (err) {
       console.error("Error fetching categories:", err);
@@ -64,14 +63,12 @@ export default function ProductsTable() {
     try {
       if (editingProduct) {
         // Update existing
-        await axios.put(
-          `http://localhost:5000/api/products/${editingProduct.id}`,
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } }
-        );
+        await axios.put(`/products/${editingProduct.id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
       } else {
         // Create new
-        await axios.post("http://localhost:5000/api/products", formData, {
+        await api.post("/products", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
@@ -102,7 +99,7 @@ export default function ProductsTable() {
     if (!window.confirm("Are you sure you want to delete this product?"))
       return;
     try {
-      await axios.delete(`http://localhost:5000/api/products/${id}`);
+      await api.delete(`/products/${id}`);
       fetchProducts();
     } catch (err) {
       console.error("Error deleting product:", err);

@@ -1,6 +1,6 @@
 // src/components/DashboardTable.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 export default function DashboardTable() {
   const [recentOrders, setRecentOrders] = useState([]);
@@ -8,7 +8,7 @@ export default function DashboardTable() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const ordersRes = await axios.get("http://localhost:5000/api/orders");
+        const ordersRes = await api.get("/orders");
         const sorted = ordersRes.data.sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );

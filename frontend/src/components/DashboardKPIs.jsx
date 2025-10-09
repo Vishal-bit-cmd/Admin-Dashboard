@@ -1,6 +1,6 @@
 // src/components/DashboardKPIs.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 export default function DashboardKPIs() {
   const [totalSales, setTotalSales] = useState(0);
@@ -10,15 +10,11 @@ export default function DashboardKPIs() {
   useEffect(() => {
     const fetchKPIs = async () => {
       try {
-        const salesRes = await axios.get(
-          "http://localhost:5000/api/kpis/total-sales"
-        );
-        const ordersRes = await axios.get(
-          "http://localhost:5000/api/kpis/total-orders"
-        );
-        const customersRes = await axios.get(
-          "http://localhost:5000/api/kpis/total-customers"
-        );
+        const [salesRes, ordersRes, customersRes] = await Promise.all([
+          api.get("/kpis/total-sales"),
+          api.get("/kpis/total-orders"),
+          api.get("/kpis/total-customers"),
+        ]);
 
         setTotalSales(salesRes.data.total_sales);
         setTotalOrders(ordersRes.data.total_orders);
@@ -27,7 +23,6 @@ export default function DashboardKPIs() {
         console.error("Error fetching KPI data:", err);
       }
     };
-
     fetchKPIs();
   }, []);
 

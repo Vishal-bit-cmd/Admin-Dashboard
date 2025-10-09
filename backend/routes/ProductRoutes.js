@@ -7,7 +7,9 @@ import multer from "multer";
 const router = express.Router();
 
 // Serve image URLs from uploads folder
-const BASE_URL = "http://localhost:5000/uploads/";
+const BASE_URL = process.env.BACKEND_URL
+    ? `${process.env.BACKEND_URL}/uploads/`
+    : "http://localhost:5000/uploads/";
 
 // Multer storage config
 const storage = multer.diskStorage({

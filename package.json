@@ -2,9 +2,19 @@
   "name": "admin-dashboard",
   "version": "1.0.0",
   "private": true,
-  "workspaces": ["frontend", "backend"],
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
   "scripts": {
-    "postinstall": "npm run build --workspace frontend",
-    "start": "npm start --workspace backend"
+    "start:backend": "node backend/server.js",
+    "dev:backend": "nodemon backend/server.js",
+    "start:frontend": "vite --cwd frontend",
+    "dev:frontend": "vite --cwd frontend",
+    "build:frontend": "vite build --cwd frontend",
+    "build": "npm run build:frontend"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }

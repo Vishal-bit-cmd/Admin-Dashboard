@@ -1,19 +1,15 @@
-// src/components/OrdersTable.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 export default function OrdersTable() {
   const [orders, setOrders] = useState([]);
-  const [search, setSearch] = useState(""); // search by customer name or order ID
-  const [status, setStatus] = useState(""); // filter by status
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
 
   const fetchOrders = async (searchQuery = "", statusFilter = "") => {
     try {
-      const res = await axios.get("http://localhost:5000/api/orders", {
-        params: {
-          search: searchQuery,
-          status: statusFilter,
-        },
+      const res = await api.get("/orders", {
+        params: { search: searchQuery, status: statusFilter },
       });
       setOrders(res.data);
     } catch (err) {
@@ -28,12 +24,11 @@ export default function OrdersTable() {
   return (
     <div className="p-3">
       <h3>Orders</h3>
-
-      {/* Search + Status Filter */}
+      {/* Filters */}
       <div className="d-flex gap-3 mb-3">
         <input
           type="text"
-          placeholder="Search by customer name or order ID..."
+          placeholder="Search..."
           className="form-control w-50"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -51,7 +46,6 @@ export default function OrdersTable() {
         </select>
       </div>
 
-      {/* Orders Table */}
       <table className="table table-bordered table-hover">
         <thead className="table-light">
           <tr>
@@ -88,7 +82,7 @@ export default function OrdersTable() {
           ) : (
             <tr>
               <td colSpan={4} className="text-center">
-                No orders found.
+                No orders found
               </td>
             </tr>
           )}
