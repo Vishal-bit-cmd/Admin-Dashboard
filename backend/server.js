@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-import KpiRoutes from "./routes/KPIRoutes.js";
+import KpiRoutes from "./routes/KpiRoutes.js";
 import ChartRoutes from "./routes/ChartRoutes.js";
 import OrderRoutes from "./routes/OrderRoutes.js";
 import ProductRoutes from "./routes/ProductRoutes.js";
@@ -30,7 +30,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
 const PORT = process.env.PORT || 5000;
