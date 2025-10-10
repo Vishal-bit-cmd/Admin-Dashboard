@@ -1,6 +1,6 @@
 // src/components/UsersTable.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 export default function UsersTable() {
   const [users, setUsers] = useState([]);
@@ -9,7 +9,7 @@ export default function UsersTable() {
 
   const fetchUsers = async (searchQuery = "", roleFilter = "") => {
     try {
-      const res = await axios.get("http://localhost:5000/api/users", {
+      const res = await api.get("/api/users", {
         params: {
           search: searchQuery,
           role: roleFilter,

@@ -1,6 +1,5 @@
 // src/components/ProductsTable.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../services/api";
 
 export default function ProductsTable() {
@@ -21,7 +20,7 @@ export default function ProductsTable() {
   // Fetch products
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/products", {
+      const res = await api.get("/api/products", {
         params: { search, category },
       });
       setProducts(res.data);
@@ -63,7 +62,7 @@ export default function ProductsTable() {
     try {
       if (editingProduct) {
         // Update existing
-        await axios.put(`/products/${editingProduct.id}`, formData, {
+        await api.put(`/products/${editingProduct.id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       } else {

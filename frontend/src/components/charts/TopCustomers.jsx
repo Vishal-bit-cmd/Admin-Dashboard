@@ -1,6 +1,5 @@
 // src/components/charts/TopCustomers.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
 import {
   LineChart,
   Line,
@@ -10,13 +9,14 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import api from "../../services/api";
 
 export default function TopCustomers() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/charts/top-customers")
+    api
+      .get("/api/charts/top-customers")
       .then((res) => setData(res.data))
       .catch((err) => console.error(err));
   }, []);

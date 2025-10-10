@@ -1,6 +1,5 @@
 // src/components/charts/SalesByProduct.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
 import {
   BarChart,
   Bar,
@@ -10,13 +9,14 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import api from "../../services/api";
 
 export default function SalesByProduct() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/charts/sales-by-product")
+    api
+      .get("/api/charts/sales-by-product")
       .then((res) => setData(res.data))
       .catch((err) => console.error(err));
   }, []);

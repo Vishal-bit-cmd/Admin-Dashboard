@@ -1,6 +1,5 @@
 // src/components/charts/SalesByCategory.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
 import {
   PieChart,
   Pie,
@@ -9,6 +8,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import api from "../../services/api";
 
 const COLORS = [
   "#0088FE",
@@ -29,8 +29,8 @@ export default function SalesByCategory() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:5000/api/charts/sales-by-category"
+        const res = await api.get(
+          "/api/charts/sales-by-category"
         );
 
         // Map backend fields to chart-compatible fields

@@ -1,6 +1,6 @@
 // src/components/tables/CustomersTable.jsx
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../services/api";
 
 export default function CustomersTable() {
   const [customers, setCustomers] = useState([]);
@@ -13,7 +13,7 @@ export default function CustomersTable() {
 
   const fetchCustomers = async (searchValue = "") => {
     try {
-      const res = await axios.get("http://localhost:5000/api/customers", {
+      const res = await api.get("/api/customers", {
         params: { search: searchValue },
       });
       setCustomers(res.data);
@@ -41,7 +41,7 @@ export default function CustomersTable() {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/customers", {
+      await api.post("/api/customers", {
         name,
         email,
         phone,
