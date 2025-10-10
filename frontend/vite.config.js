@@ -6,8 +6,7 @@ import path from 'path'
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: path.resolve(__dirname, '../backend/dist'), // build frontend into backend/dist
-    emptyOutDir: true,
+    outDir: path.resolve(__dirname, "../frontend/dist")
   },
   server: {
     port: 5173, // for local dev
