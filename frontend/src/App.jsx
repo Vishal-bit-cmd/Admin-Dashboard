@@ -5,8 +5,8 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useState } from "react";
-import Navbar from "./components/Navbar";
-import Sidebar from "./components/Sidebar";
+import Navbar from "./components/NavBar";
+import Sidebar from "./components/SideBar";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Orders from "./pages/Orders";
