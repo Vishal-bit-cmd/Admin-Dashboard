@@ -1,20 +1,11 @@
 {
   "name": "admin-dashboard",
   "version": "1.0.0",
-  "private": true,
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
+  "type": "module",
   "scripts": {
-    "start:backend": "node backend/server.js",
-    "dev:backend": "nodemon backend/server.js",
-    "start:frontend": "vite --cwd frontend",
-    "dev:frontend": "vite --cwd frontend",
-    "build:frontend": "vite build --cwd frontend",
-    "build": "npm run build:frontend"
+    "start": "npm run build --prefix frontend && npm run start --prefix backend"
   },
-  "devDependencies": {
-    "nodemon": "^3.0.2"
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
